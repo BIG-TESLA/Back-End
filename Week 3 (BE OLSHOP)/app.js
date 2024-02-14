@@ -19,6 +19,7 @@ let produk_online = [
         nama:"laptop",
         deskripsi:"laptop bagus",
         harga:15000000,
+        stok: 50,
         image:"/images/laptop.jpg" 
     },
     {
@@ -26,6 +27,7 @@ let produk_online = [
         nama:"Keyboard",
         deskripsi:"keyboard bagus",
         harga:650000,
+        stok: 50,
         image:"/images/keyboard.jpg"
     },
     {
@@ -33,6 +35,7 @@ let produk_online = [
         nama:"monitor",
         deskripsi:"monitor bagus",
         harga:2500000,
+        stok: 50,
         image:"/images/monitor.jpg"
     },
     {
@@ -40,6 +43,7 @@ let produk_online = [
         nama:"mouse",
         deskripsi:"mouse bagus",
         harga:350000,
+        stok: 50,
         image:"/images/mouse.jpg"
     }
 ]
@@ -47,9 +51,15 @@ let produk_online = [
 let keranjang = [
   {
     id:3,
-        nama:"monitor",
-        harga:2500000,
-        total:2
+    nama:"monitor",
+    harga:2500000,
+    total:2
+  },
+  {
+    id:2,
+    nama:"Keyboard",
+    harga:650000,
+    total:3
   }
 ]
 
@@ -59,6 +69,7 @@ const validasiproduk = (produk) => {
     nama: joi.string().min(3).required(),
     deskripsi: joi.string().min(3).required(),
     harga: joi.number().required(),
+    stok: joi.number().required(),
   })
 
   return schema.validate(produk)
@@ -107,7 +118,7 @@ app.get('/produk/:id', (req, res) => {
 
 //add produk
 app.post('/produk', (req, res) => {
-  const {nama, deskripsi, harga} = req.body
+  const {nama, deskripsi, harga, stok} = req.body
 
   const id = produk_online.length + 1;
 
@@ -120,7 +131,8 @@ app.post('/produk', (req, res) => {
   }
 
   const image = req.files.image
-  const filename = `${nama}.jpg`
+  const filenamejoin = nama.split(" ").join("");
+  const filename = `${filenamejoin}.jpg`
 
   image.mv(path.join(__dirname, 'public/images', filename))
 
@@ -129,12 +141,13 @@ app.post('/produk', (req, res) => {
     nama,
     deskripsi,
     harga,
-    image: filename,
+    stok,
+    image: `/images/${filename}`,
   }
 
   produk_online.push(newproduk)
 
-  res.status(201).json({
+  res.status(200).json({
     messages: "Success add Data",
     data : newproduk
   })
@@ -143,7 +156,7 @@ app.post('/produk', (req, res) => {
 //edit data produk
 app.put('/produk/:id', (req, res) => {
   const id = req.params.id
-  const {nama, deskripsi, harga} = req.body
+  const {nama, deskripsi, harga, stok} = req.body
 
   const {error} = validasiproduk(req.body)
 
@@ -165,6 +178,7 @@ app.put('/produk/:id', (req, res) => {
   produk.nama = nama
   produk.deskripsi = deskripsi
   produk.harga = harga
+  produk.stok = stok
   
   const image = req.files.image
 
@@ -234,7 +248,7 @@ app.post(`/keranjang`, (req,res) => {
 
   if (indexKeranjang != -1) {
     keranjang[indexKeranjang].total += total
-    return res.status(201).json({
+    return res.status(200).json({
       message: "Total barang sudah diubah",
       data: keranjang
     })
@@ -247,7 +261,7 @@ app.post(`/keranjang`, (req,res) => {
     total
   })
 
-  return res.status(201).json({
+  return res.status(200).json({
     message: "Barang berhasil ditambahkan ke keranjang",
     data: keranjang
   })
@@ -261,7 +275,7 @@ app.delete('/keranjang/:id', (req, res) => {
   const indexKeranjang = keranjang.findIndex(produk => produk.id == id);
   keranjang.splice(indexKeranjang, 1)
 
-  return res.status(201).json({
+  return res.status(200).json({
     message: "Barang berhasil dihapus dari keranjang",
     data: keranjang
   })
