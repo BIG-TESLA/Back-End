@@ -85,13 +85,13 @@ const validasitotal = (produk) => {
 }
 
 app.get('/', (req, res) => {
-  res.send('welcome')
+  res.send('Selamat Datang di Toko BIG TESLA')
 })
-
 //route product
 
 //get all produk
-app.get('/produk', (req, res) => {
+app.get('/produk', (req,res) => {
+
   res.status(200).json({
     messages: "Success Get All Data",
     data:produk_online
@@ -147,7 +147,7 @@ app.post('/produk', (req, res) => {
 
   produk_online.push(newproduk)
 
-  res.status(200).json({
+  res.status(201).json({
     messages: "Success add Data",
     data : newproduk
   })
@@ -193,7 +193,7 @@ app.put('/produk/:id', (req, res) => {
     produk.image = `/images/${filename}`
   }
 
-  res.status(200).json({
+  res.status(201).json({
     messages:"Success Upadate Data",
     data: produk
   })
@@ -304,7 +304,7 @@ app.put('/keranjang/:id', (req, res) => {
 
   produk.total = total
 
-  res.status(200).json({
+  res.status(201).json({
     messages: "Success Update Data",
     data: keranjang
   })
