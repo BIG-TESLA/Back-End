@@ -1,3 +1,6 @@
+// LINK DOKUMENTASI POSTMAN : https://documenter.getpostman.com/view/32853404/2sA2r545eh
+
+
 const express = require('express')
 const app = express()
 const port = 3000
