@@ -1,5 +1,3 @@
-// LINK DOKUMENTASI POSTMAN : https://documenter.getpostman.com/view/32853404/2sA2r545eh
-
 
 const express = require('express')
 const app = express()
@@ -16,37 +14,37 @@ app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use(fileUpload()) 
 
-let produk_online = [
+let product_online = [
     {
         id:1,
-        nama:"laptop",
-        deskripsi:"laptop bagus",
-        harga:15000000,
-        stok: 50,
+        name:"laptop",
+        description:"laptop bagus",
+        price:15000000,
+        stock: 50,
         image:"/images/laptop.jpg" 
     },
     {
         id:2,
-        nama:"Keyboard",
-        deskripsi:"keyboard bagus",
-        harga:650000,
-        stok: 50,
+        name:"Keyboard",
+        description:"keyboard bagus",
+        price:650000,
+        stock: 50,
         image:"/images/keyboard.jpg"
     },
     {
         id:3,
-        nama:"monitor",
-        deskripsi:"monitor bagus",
-        harga:2500000,
-        stok: 50,
+        name:"monitor",
+        description:"monitor bagus",
+        price:2500000,
+        stock: 50,
         image:"/images/monitor.jpg"
     },
     {
         id:4,
-        nama:"mouse",
-        deskripsi:"mouse bagus",
-        harga:350000,
-        stok: 50,
+        name:"mouse",
+        description:"mouse bagus",
+        price:350000,
+        stock: 50,
         image:"/images/mouse.jpg"
     }
 ]
@@ -54,37 +52,37 @@ let produk_online = [
 let keranjang = [
   {
     id:3,
-    nama:"monitor",
-    harga:2500000,
+    name:"monitor",
+    price:2500000,
     total:2
   },
   {
     id:2,
-    nama:"Keyboard",
-    harga:650000,
+    name:"Keyboard",
+    price:650000,
     total:3
   }
 ]
 
-//validasi tambah produk
-const validasiproduk = (produk) => {
+//validate tambah product
+const validateproduct = (product) => {
   const schema = joi.object({
-    nama: joi.string().min(3).required(),
-    deskripsi: joi.string().min(3).required(),
-    harga: joi.number().required(),
-    stok: joi.number().required(),
+    name: joi.string().min(3).required(),
+    description: joi.string().min(3).required(),
+    price: joi.number().required(),
+    stock: joi.number().required(),
   })
 
-  return schema.validate(produk)
+  return schema.validate(product)
 }
 
-//validasi total produk di keranjang
-const validasitotal = (produk) => {
+//validate total product di keranjang
+const validatetotal = (product) => {
   const schema = joi.object({
     total: joi.number().required(),
   })
 
-  return schema.validate(produk)
+  return schema.validate(product)
 }
 
 app.get('/', (req, res) => {
@@ -92,22 +90,22 @@ app.get('/', (req, res) => {
 })
 //route product
 
-//get all produk
-app.get('/produk', (req,res) => {
+//get all product
+app.get('/product', (req,res) => {
 
   res.status(200).json({
     messages: "Success Get All Data",
-    data:produk_online
+    data:product_online
   })
 })
 
-//get detail produk by id
-app.get('/produk/:id', (req, res) => {
+//get detail product by id
+app.get('/product/:id', (req, res) => {
   const id = req.params.id
 
-  const produk = produk_online.find(produk  => produk.id == id)
+  const product = product_online.find(product  => product.id == id)
 
-  if(!produk) {
+  if(!product) {
     res.status(404).json({
       messages: "Data not found"
     })
@@ -115,17 +113,17 @@ app.get('/produk/:id', (req, res) => {
 
   res.status(200).json({
     messages: "Success Get Detail Data",
-    data: produk
+    data: product
   })
 })
 
-//add produk
-app.post('/produk', (req, res) => {
-  const {nama, deskripsi, harga, stok} = req.body
+//add product
+app.post('/product', (req, res) => {
+  const {name, description, price, stock} = req.body
 
-  const id = produk_online.length + 1;
+  const id = product_online.length + 1;
 
-  const {error} = validasiproduk(req.body)
+  const {error} = validateproduct(req.body)
 
   if(error) {
     return res.status(400).json({
@@ -134,34 +132,34 @@ app.post('/produk', (req, res) => {
   }
 
   const image = req.files.image
-  const filenamejoin = nama.split(" ").join("");
+  const filenamejoin = name.split(" ").join("");
   const filename = `${filenamejoin}.jpg`
 
   image.mv(path.join(__dirname, 'public/images', filename))
 
-  const newproduk = {
+  const newproduct = {
     id,
-    nama,
-    deskripsi,
-    harga,
-    stok,
+    name,
+    description,
+    price,
+    stock,
     image: `/images/${filename}`,
   }
 
-  produk_online.push(newproduk)
+  product_online.push(newproduct)
 
   res.status(201).json({
     messages: "Success add Data",
-    data : newproduk
+    data : newproduct
   })
 })
 
-//edit data produk
-app.put('/produk/:id', (req, res) => {
+//edit data product
+app.put('/product/:id', (req, res) => {
   const id = req.params.id
-  const {nama, deskripsi, harga, stok} = req.body
+  const {name, description, price, stock} = req.body
 
-  const {error} = validasiproduk(req.body)
+  const {error} = validateproduct(req.body)
 
   if(error) {
     return res.status(400).json({
@@ -169,19 +167,19 @@ app.put('/produk/:id', (req, res) => {
     })
   }
 
-  const produk = produk_online.find(produk => produk.id == id)
+  const product = product_online.find(product => product.id == id)
 
-  if(!produk) {
+  if(!product) {
     return res.status(404).json({
       messages: "Product not found"
     })
   }
 
-  const fileNameOld = `${produk.nama}.jpg`
-  produk.nama = nama
-  produk.deskripsi = deskripsi
-  produk.harga = harga
-  produk.stok = stok
+  const fileNameOld = `${product.name}.jpg`
+  product.name = name
+  product.description = description
+  product.price = price
+  product.stock = stock
   
   const image = req.files.image
 
@@ -191,35 +189,35 @@ app.put('/produk/:id', (req, res) => {
     }catch(err){
     console.log(err)
     }
-    const filename = `${nama}.jpg`
+    const filename = `${name}.jpg`
     image.mv(path.join(__dirname, 'public/images', filename))
-    produk.image = `/images/${filename}`
+    product.image = `/images/${filename}`
   }
 
   res.status(201).json({
     messages:"Success Upadate Data",
-    data: produk
+    data: product
   })
 
 })
 
-//delete produk
-app.delete(`/produk/:id`, (req,res) => {
+//delete product
+app.delete(`/product/:id`, (req,res) => {
   const id = req.params.id
 
-  const produk = produk_online.find(produk => produk.id == id)
-  if(!produk){
+  const product = product_online.find(product => product.id == id)
+  if(!product){
     return res.status(404).json({
       messages:"Data not found"
     })
   }
 
-  const index = produk_online.indexOf(produk)
-  produk_online.splice(index, 1)
+  const index = product_online.indexOf(product)
+  product_online.splice(index, 1)
 
   res.status(200).json({
     messages:"Success Delete Data",
-    data: produk
+    data: product
   })
 })
 
@@ -239,15 +237,15 @@ app.get('/keranjang', (req, res) => {
 app.post(`/keranjang`, (req,res) => {
   const {id, total} = req.body
 
-  const dataproduk = produk_online.find(produk => produk.id == id)
+  const dataproduct = product_online.find(product => product.id == id)
 
-  if(!dataproduk){
+  if(!dataproduct){
     return res.status(404).json({
       message: "Data not found"
     })
   }
 
-  const indexKeranjang = keranjang.findIndex(produk => produk.id == id);
+  const indexKeranjang = keranjang.findIndex(product => product.id == id);
 
   if (indexKeranjang != -1) {
     keranjang[indexKeranjang].total += total
@@ -258,9 +256,9 @@ app.post(`/keranjang`, (req,res) => {
   }
 
   keranjang.push({
-    id: dataproduk.id,
-    nama: dataproduk.nama,
-    harga: dataproduk.harga,
+    id: dataproduct.id,
+    name: dataproduct.name,
+    price: dataproduct.price,
     total
   })
 
@@ -275,7 +273,7 @@ app.post(`/keranjang`, (req,res) => {
 app.delete('/keranjang/:id', (req, res) => {
   const {id} = req.params
 
-  const indexKeranjang = keranjang.findIndex(produk => produk.id == id);
+  const indexKeranjang = keranjang.findIndex(product => product.id == id);
   keranjang.splice(indexKeranjang, 1)
 
   return res.status(200).json({
@@ -289,7 +287,7 @@ app.put('/keranjang/:id', (req, res) => {
   const id = req.params.id
   const {total} = req.body
 
-  const {error} = validasitotal(req.body)
+  const {error} = validatetotal(req.body)
 
   if(error) {
     return res.status(400).json({
@@ -297,15 +295,15 @@ app.put('/keranjang/:id', (req, res) => {
     })
   }
 
-  const produk = keranjang.find(produk => produk.id == id)
+  const product = keranjang.find(product => product.id == id)
 
-  if(!produk) {
+  if(!product) {
     return res.status(404).json({
       messages: "Data Not Found"
     })
   }
 
-  produk.total = total
+  product.total = total
 
   res.status(201).json({
     messages: "Success Update Data",
