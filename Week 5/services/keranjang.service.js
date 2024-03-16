@@ -1,8 +1,8 @@
-const { rupiahFormat } = require('../helpers/rupiahFormat.helpers')
+const { rupiahFormat } = require('../helpers/rupiahFormat.helper')
 const { keranjang, products } = require('../models')
 
-exports.createkeranjangtProduct = async (req, res) => {
-
+exports.createkeranjangProduct = async (req, res) => {
+    console.log(req.body);
     const {id_product, quantity} = req.body
 
     const id_user = req.user_data.id

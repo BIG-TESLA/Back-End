@@ -18,7 +18,7 @@ exports.getDetailProduct = async (req, res) => {
 }
 
 exports.createProduct = async (req, res) => {
-
+    console.log(req.body)
     let {error} = validateAddProduct(req.body)
 
     if(error){

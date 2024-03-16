@@ -41,12 +41,12 @@ exports.getDetailProduct = async (req, res) => {
 }
 
 exports.createProduct = async (req, res) => {
-    const {name,description, price, image} = req.body
+    const {name,description, price, stock, images} = req.body
     const slug = name.toLowerCase().split(' ').join('-')
 
     const imageFilePath = await saveImage(req.files.image,slug, "product")
 
-    const data = await products.create({name, description, price, image: imageFilePath})
+    const data = await products.create({name, description, price, stock, images: imageFilePath})
 
     return {
         status: 201,
@@ -68,16 +68,16 @@ exports.editProduct = async (req, res) => {
         }
     }
 
-    const {name,description, price} = req.body
+    const {name,description, price, stock} = req.body
     const slug = name.toLowerCase().split(' ').join('-')
 
-    deleteImageHelper(data.image)
+    deleteImageHelper(data.images)
 
     const imageFilePath = await saveImage(req.files.image,slug, "product")
 
     console.log(imageFilePath)
 
-    await products.update({name, description, price, image: imageFilePath}, {where: {id}})
+    await products.update({name, description, price, stock, images: imageFilePath}, {where: {id}})
 
     return {
         status: 200,
@@ -98,7 +98,7 @@ exports.deleteProduct = async (req, res) => {
         }
     }
 
-    deleteImageHelper(data.image)
+    deleteImageHelper(data.images)
 
     await products.destroy({where: {id}})
 
