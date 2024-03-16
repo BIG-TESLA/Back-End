@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   keranjang.init({
+    id_user: DataTypes.INTEGER,
     id_product: DataTypes.INTEGER,
     quantity: DataTypes.INTEGER
   }, {

@@ -1,9 +1,11 @@
 const { rupiahFormat } = require('../helpers/rupiahFormat.helpers')
-const { checkout, products } = require('../models')
+const { keranjang, products } = require('../models')
 
 exports.createkeranjangtProduct = async (req, res) => {
 
     const {id_product, quantity} = req.body
+
+    const id_user = req.user_data.id
 
     const product = await products.findOne({where: {id: id_product}})
 
@@ -14,7 +16,7 @@ exports.createkeranjangtProduct = async (req, res) => {
         }
     }
 
-    let data = await checkout.create({id_product, quantity})
+    let data = await keranjang.create({id_user, id_product, quantity})
     
     data.dataValues.total = rupiahFormat(quantity * product.price)
 
