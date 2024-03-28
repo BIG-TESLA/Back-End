@@ -6,3 +6,11 @@ exports.keranjangProducController = async (req, res) => {
  
     return res.status(result.status).json(result)
 }
+
+exports.keranjangNotificationController = async (req, res) => {
+
+    const result = await keranjangService.keranjangNotification(req,res)
+
+    return res.status(result.status).json(result)
+
+}
